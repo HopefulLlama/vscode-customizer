@@ -18,6 +18,7 @@ class Customizer {
       opacity: 0.1,
       // available modes: fullscreen, fullscreen_notitle, editor, editor_extended, panel, sidebar, sidebar_extended
       mode: "fullscreen_notitle",
+      debug: true,
     };
 
     const mergedConfig = {
@@ -41,6 +42,15 @@ class Customizer {
     this.opacity = mergedOptions.opacity;
     this.mode = mergedOptions.mode;
     this.observe = mergedOptions.observe;
+    this.debug = mergedOptions.debug;
+
+    this.log("Initializing customizer...");
+  }
+
+  log(message) {
+    if(this.debug) {
+      console.log(`customizer: ${message}`);
+    }
   }
 
   createElement() {
@@ -129,7 +139,7 @@ class Customizer {
   }
 
   setBackgroundImage(path, div) {
-    console.log("customizer:", "changing background image to", path, "at", div);
+    this.log(`Changing background image to ${path} at ${div}`);
     div.style.opacity = this.opacity;
     div.style.backgroundImage = `url(${path})`;
   }
@@ -137,30 +147,25 @@ class Customizer {
   changeToConfigImage(div) {
     const editorInstance = document.getElementsByClassName("editor-instance")[0];
     const editorMode = editorInstance.getAttribute("data-mode-id");
-    console.log("customizer:", "Switched to tab with mode " + editorMode);
+    this.log(`Switched to tab with mode: ${editorMode}`);
 
     // get the right background image
     const imagePath = this.config[editorMode];
     if (imagePath === undefined) {
-        console.log("customizer:", "Couldn't find configuration for", editorMode, "using default image.");
-        console.log("customizer:", this.config.default);
+      this.log(`Couldn't find configuration for ${editorMode}. Using default image.`);
+      this.log(this.config.default);
       this.setBackgroundImage(this.config.default, div);
-
     } else {
       this.setBackgroundImage(imagePath, div);
     }
   }
 
   observeChanges(div) {
-    const editorInstance = document.getElementsByClassName("editor-instance");
+    const target = document.getElementsByClassName("editor-instance")[0];
     // add an mutationobserver to the editor instance for getting changes
-    const target = editorInstance[0];
-    console.log("customizer:", target);
-
     const observer = new MutationObserver((mutations) => {
       // the important code is Here
       const mutation = mutations.find((mutation) => mutation.attributeName === "data-mode-id");
-      console.log("customizer:", mutation);
       if(mutation !== undefined) {
         this.changeToConfigImage(div);
       }
@@ -183,6 +188,8 @@ class Customizer {
   }
 
   main() {
+    this.log("Starting customizer");
+
     const div = this.createElement();
     this.addElement(div);
     this.changeBackgroundMode(div);
@@ -191,10 +198,7 @@ class Customizer {
 }
 
 const customizer = new Customizer();
-
-console.log("customizer:", "Loading customizer...");
 // todo configuration for specific files
 window.addEventListener("load", () => {
-  console.log("customizer:", "loaded - doing customizer things");
   customizer.main();
 });
