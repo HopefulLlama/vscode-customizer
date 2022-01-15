@@ -1,16 +1,39 @@
-
+function getFullscreenBackgroundStyle(path) {
+  return `
+    opacity: 0.1;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center center;
+    background-image: url(${path});
+  `;
+}
 
 class Customizer {
   constructor(options) {
     const defaultOptions = {
       config: {
-        default: "https://images.alphacoders.com/985/thumb-1920-985802.png",
-        plaintext: "https://img5.goodfon.com/wallpaper/nbig/2/28/tsvety-buket-bloknot-1.jpg",
-        javascript: "https://i.kym-cdn.com/entries/icons/original/000/026/638/cat.jpg",
-        json: "https://wallpaperaccess.com/full/1555147.png",
-        jsonc: "https://wallpaperaccess.com/full/1555147.png",
-        html: "https://wallpaperaccess.com/full/4868336.jpg",
-        css: "https://p4.wallpaperbetter.com/wallpaper/285/806/562/css-css3-wallpaper-preview.jpg"
+        default: {
+          style: getFullscreenBackgroundStyle("https://images.alphacoders.com/985/thumb-1920-985802.png"),
+        },
+        plaintext: {
+          style: getFullscreenBackgroundStyle("https://img5.goodfon.com/wallpaper/nbig/2/28/tsvety-buket-bloknot-1.jpg"),
+        },
+        javascript: {
+          style: getFullscreenBackgroundStyle("https://i.kym-cdn.com/entries/icons/original/000/026/638/cat.jpg"),
+        },
+        json: {
+          style: getFullscreenBackgroundStyle("https://wallpaperaccess.com/full/1555147.png"),
+        },
+        jsonc: {
+          style: getFullscreenBackgroundStyle("https://wallpaperaccess.com/full/1555147.png"),
+        },
+        html: {
+          style: getFullscreenBackgroundStyle("https://wallpaperaccess.com/full/4868336.jpg"),
+        },
+        css: {
+          style: getFullscreenBackgroundStyle("https://p4.wallpaperbetter.com/wallpaper/285/806/562/css-css3-wallpaper-preview.jpg"),
+        },
       },
       observe: {
         interval: 100,
@@ -61,11 +84,6 @@ class Customizer {
     div.id = "customizer-background-div";
 
     const baseCss = `
-      opacity: 0.1;
-      background-size: cover;
-      background-repeat: no-repeat;
-      background-attachment: fixed;
-      background-position: center center;
       z-index: 500;
       position: absolute;
       pointer-events: none;
@@ -140,10 +158,9 @@ class Customizer {
     });
   }
 
-  setBackgroundImage(path, div) {
-    this.log(`Changing background image to ${path} at ${div}`);
-    div.style.opacity = this.opacity;
-    div.style.backgroundImage = `url(${path})`;
+  setBackgroundStyle(style, div) {
+    this.log("Applying styles to background");
+    div.style.cssText = div.style.cssText + style;
   }
 
   changeToConfigImage(div) {
@@ -152,8 +169,8 @@ class Customizer {
     this.log(`Switched to tab with mode: ${editorMode}`);
 
     // get the right background image
-    const imagePath = this.config[editorMode] !== undefined ? this.config[editorMode] : this.config.default;
-    this.setBackgroundImage(imagePath, div);
+    const config = this.config[editorMode] !== undefined ? this.config[editorMode] : this.config.default;
+    this.setBackgroundStyle(config.style, div);
   }
 
   observeChanges(div) {
