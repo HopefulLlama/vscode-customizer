@@ -1,13 +1,40 @@
 function getFullscreenBackgroundStyle(path) {
   return `
-    opacity: 0.1;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-position: center center;
-    background-image: url(${path});
+  opacity: 0.1;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center center;
+  background-image: url(${path});
   `;
 }
+
+/*!
+* Deep merge two or more objects together.
+* (c) 2019 Chris Ferdinandi, MIT License, https://gomakethings.com
+* @param   {Object}   objects  The objects to merge together
+* @returns {Object}            Merged values of defaults and options
+*/
+function merge(a, b) {
+  const entries = b !== undefined ? Object.entries(b) : [];
+
+  return entries.reduce((accumulator, [key, value]) => {
+    if (value.toString() === '[object Object]') {
+      // If we're doing a deep merge and the property is an object
+      accumulator[key] = extend(a[key], value);
+    } else {
+      // Otherwise, do a regular merge
+      accumulator[key] = value;
+    }
+    return accumulator;
+  }, a);
+};
+
+function extend(...args) {
+  // Loop through each object and conduct a merge
+  return args.reduce((accumulator, current) => merge(accumulator, current), {});
+};
+
 
 class Customizer {
   constructor(options) {
@@ -15,24 +42,31 @@ class Customizer {
       config: {
         default: {
           style: getFullscreenBackgroundStyle("https://images.alphacoders.com/985/thumb-1920-985802.png"),
+          callback: () => {},
         },
         plaintext: {
           style: getFullscreenBackgroundStyle("https://img5.goodfon.com/wallpaper/nbig/2/28/tsvety-buket-bloknot-1.jpg"),
+          callback: () => {},
         },
         javascript: {
           style: getFullscreenBackgroundStyle("https://i.kym-cdn.com/entries/icons/original/000/026/638/cat.jpg"),
+          callback: () => {},
         },
         json: {
           style: getFullscreenBackgroundStyle("https://wallpaperaccess.com/full/1555147.png"),
+          callback: () => {},
         },
         jsonc: {
           style: getFullscreenBackgroundStyle("https://wallpaperaccess.com/full/1555147.png"),
+          callback: () => {},
         },
         html: {
           style: getFullscreenBackgroundStyle("https://wallpaperaccess.com/full/4868336.jpg"),
+          callback: () => {},
         },
         css: {
           style: getFullscreenBackgroundStyle("https://p4.wallpaperbetter.com/wallpaper/285/806/562/css-css3-wallpaper-preview.jpg"),
+          callback: () => {},
         },
       },
       observe: {
@@ -46,22 +80,7 @@ class Customizer {
       debug: true,
     };
 
-    const mergedConfig = {
-      ...defaultOptions.config,
-      ...(options !== undefined ? options.config : {}),
-    };
-
-    const mergedObserve = {
-      ...defaultOptions.observe,
-      ...(options !== undefined ? options.observe : {}),
-    }
-
-    const mergedOptions = {
-      ...defaultOptions,
-      ...options,
-      config: mergedConfig,
-      observe: mergedObserve,
-    };
+    const mergedOptions = extend(defaultOptions, options);
 
     this.config = mergedOptions.config;
     this.opacity = mergedOptions.opacity;
