@@ -348,10 +348,8 @@ class Customizer {
     // get the right background image
     const config = this.config[editorMode] !== undefined ? this.config[editorMode] : this.config.default;
 
-    this.setBackgroundStyle(this.config.all.style, div);
+    this.setBackgroundStyle(this.config.all.style + config.style, div);
     this.config.all.callback(div);
-
-    this.setBackgroundStyle(config.style, div);
     config.callback(div);
   }
 
