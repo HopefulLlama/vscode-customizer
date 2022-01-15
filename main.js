@@ -59,26 +59,27 @@ class Customizer {
     const div = document.createElement("div");
     div.classList.add("customizer-background-div");
     div.id = "customizer-background-div";
-    div.style.cssText = `
+
+    const baseCss = `
       opacity: 0.1;
       background-size: cover;
       background-repeat: no-repeat;
       background-attachment: fixed;
       background-position: center center;
-      width: 100vw;
-      height: 100vh;
       z-index: 500;
       position: absolute;
       pointer-events: none;
     `;
 
-    if (this.mode == "fullscreen") {
-      div.style.width = "100vw";
-      div.style.height = "100vh";
-    } else {
-      div.style.width = "100%";
-      div.style.height = "100%";
-    }
+    const sizeCss =  this.mode === "fullscreen" ? `
+      width: 100vw;
+      height: 100vh;
+    ` : `
+      width: 100%;
+      height: 100%;
+    `;
+
+    div.style.cssText = baseCss + sizeCss;
 
     return div;
   }
@@ -151,14 +152,8 @@ class Customizer {
     this.log(`Switched to tab with mode: ${editorMode}`);
 
     // get the right background image
-    const imagePath = this.config[editorMode];
-    if (imagePath === undefined) {
-      this.log(`Couldn't find configuration for ${editorMode}. Using default image.`);
-      this.log(this.config.default);
-      this.setBackgroundImage(this.config.default, div);
-    } else {
-      this.setBackgroundImage(imagePath, div);
-    }
+    const imagePath = this.config[editorMode] !== undefined ? this.config[editorMode] : this.config.default;
+    this.setBackgroundImage(imagePath, div);
   }
 
   observeChanges(div) {
