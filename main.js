@@ -1,11 +1,18 @@
 // edit these options!
 const options = {
   config: {
+    all: {
+      callback: (div) => {
+        while (div.firstChild) {
+          div.removeChild(div.lastChild);
+        }
+      }
+    },
     javascript: {
       callback: (div) => {
         console.log(`Got div ${div.id}`);
         const ROWS = 200;
-        const COLS = 600;
+        const COLS = 300;
         var NUM_PARTICLES = ROWS * COLS,
         THICKNESS = Math.pow( 80, 2 ),
         SPACING = 3,
@@ -103,11 +110,9 @@ const options = {
           mx = w * 0.5 + ( Math.cos( t * 2.1 ) * Math.cos( t * 0.9 ) * w * 0.45 );
           my = h * 0.5 + ( Math.sin( t * 3.2 ) * Math.tan( Math.sin( t * 0.8 ) ) * h * 0.45 );
         }
-          
+
         for ( i = 0; i < NUM_PARTICLES; i++ ) {
-          
           p = list[i];
-          
           d = ( dx = mx - p.x ) * dx + ( dy = my - p.y ) * dy;
           f = -THICKNESS / d;
 
@@ -149,12 +154,12 @@ const options = {
 
 function getFullscreenBackgroundStyle(path) {
   return `
-  opacity: 0.1;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-position: center center;
-  background-image: url(${path});
+    opacity: 0.1;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center center;
+    background-image: url(${path});
   `;
 }
 
@@ -189,6 +194,10 @@ class Customizer {
   constructor(options) {
     const defaultOptions = {
       config: {
+        all: {
+          style: "",
+          callback: () => {},
+        },
         default: {
           style: getFullscreenBackgroundStyle("https://images.alphacoders.com/985/thumb-1920-985802.png"),
           callback: () => {},
@@ -338,6 +347,10 @@ class Customizer {
 
     // get the right background image
     const config = this.config[editorMode] !== undefined ? this.config[editorMode] : this.config.default;
+
+    this.setBackgroundStyle(this.config.all.style, div);
+    this.config.all.callback(div);
+
     this.setBackgroundStyle(config.style, div);
     config.callback(div);
   }
