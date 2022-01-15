@@ -1,3 +1,5 @@
+
+
 class Customizer {
   constructor(options) {
     const defaultOptions = {
@@ -85,40 +87,39 @@ class Customizer {
     document.body.append(div);
   }
 
+  getParent() {
+    switch (this.mode) {
+      case "fullscreen":
+        return document.body;
+      case "fullscreen_notitle":
+        return document.getElementsByClassName("split-view-view visible")[1];
+      case "editor":
+      case "editor_extended":
+        return document.getElementById("workbench.parts.editor");
+      case "panel":
+        return document.getElementById("workbench.parts.panel");
+      case "sidebar":
+      case "sidebar_extended":
+        return document.getElementById("workbench.parts.sidebar");
+    }
+  }
+
+  styleDiv(div) {
+    switch(this.mode) {
+      case "editor_extended":
+        div.style.height = "100vh";
+        break;
+      case "sidebar_extended":
+        div.style.width = "100vw";
+        break;
+    }
+  }
+
   changeBackgroundMode(div) {
     return this.waitForElementToDisplay('#workbench\\.parts\\.editor', this.observe.interval, this.observe.timeout)
       .then(() => {
-        switch (this.mode) {
-          case "fullscreen":
-            document.body.prepend(div);
-            break;
-          case "fullscreen_notitle":
-            const fullscreenNoT = document.getElementsByClassName("split-view-view visible")[1];
-            fullscreenNoT.prepend(div);
-            break;
-          case "editor":
-            const editor = document.getElementById("workbench.parts.editor");
-            editor.prepend(div);
-            break;
-          case "editor_extended":
-            const editorExt = document.getElementById("workbench.parts.editor");
-            editorExt.prepend(div);
-            div.style.height = "100vh";
-            break;
-          case "panel":
-            const panel = document.getElementById("workbench.parts.panel");
-            panel.prepend(div);
-            break;
-          case "sidebar":
-            const sidebar = document.getElementById("workbench.parts.sidebar");
-            sidebar.prepend(div);
-            break;
-          case "sidebar_extended":
-            const sidebarExt = document.getElementById("workbench.parts.sidebar");
-            sidebarExt.prepend(div);
-            div.style.width = "100vw";
-            break;
-        }
+        this.getParent().prepend(div);
+        this.styleDiv(div);
       });
   }
 
