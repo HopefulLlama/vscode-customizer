@@ -50,7 +50,9 @@ class Customizer {
         },
         javascript: {
           style: getFullscreenBackgroundStyle("https://i.kym-cdn.com/entries/icons/original/000/026/638/cat.jpg"),
-          callback: () => {},
+          callback: (div) => {
+            console.log(`Got div ${div.id}`);
+          },
         },
         json: {
           style: getFullscreenBackgroundStyle("https://wallpaperaccess.com/full/1555147.png"),
@@ -182,7 +184,7 @@ class Customizer {
     div.style.cssText = div.style.cssText + style;
   }
 
-  changeToConfigImage(div) {
+  applyConfig(div) {
     const editorInstance = document.getElementsByClassName("editor-instance")[0];
     const editorMode = editorInstance.getAttribute("data-mode-id");
     this.log(`Switched to tab with mode: ${editorMode}`);
@@ -190,6 +192,7 @@ class Customizer {
     // get the right background image
     const config = this.config[editorMode] !== undefined ? this.config[editorMode] : this.config.default;
     this.setBackgroundStyle(config.style, div);
+    config.callback(div);
   }
 
   observeChanges(div) {
@@ -199,7 +202,7 @@ class Customizer {
       // the important code is Here
       const mutation = mutations.find((mutation) => mutation.attributeName === "data-mode-id");
       if(mutation !== undefined) {
-        this.changeToConfigImage(div);
+        this.applyConfig(div);
       }
     });
 
