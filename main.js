@@ -1,13 +1,6 @@
 // edit these options!
 const options = {
   config: {
-    all: {
-      callback: (div) => {
-        while (div.firstChild) {
-          div.removeChild(div.lastChild);
-        }
-      }
-    },
     javascript: {
       callback: (div) => {
         console.log(`Got div ${div.id}`);
@@ -196,7 +189,11 @@ class Customizer {
       config: {
         all: {
           style: "",
-          callback: () => {},
+          callback: (div) => {
+            while (div.firstChild) {
+              div.removeChild(div.lastChild);
+            }
+          }
         },
         default: {
           style: getFullscreenBackgroundStyle("https://images.alphacoders.com/985/thumb-1920-985802.png"),
@@ -231,8 +228,6 @@ class Customizer {
         interval: 100,
         timeout: 3000,
       },
-      // 0 - 1
-      opacity: 0.1,
       // available modes: fullscreen, fullscreen_notitle, editor, editor_extended, panel, sidebar, sidebar_extended
       mode: "fullscreen_notitle",
       debug: true,
@@ -241,7 +236,6 @@ class Customizer {
     const mergedOptions = extend(defaultOptions, options);
 
     this.config = mergedOptions.config;
-    this.opacity = mergedOptions.opacity;
     this.mode = mergedOptions.mode;
     this.observe = mergedOptions.observe;
     this.debug = mergedOptions.debug;
