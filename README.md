@@ -1,25 +1,13 @@
-### Custom Background Images for VSCode!
+### Customize Background for VSCode!
 
-Custom background images for languages in vscode. Quick Demonstration:
+Custom backgrounds for languages in vscode. Quick Demonstration:
 
-https://user-images.githubusercontent.com/71931749/133819638-9b65fea0-573f-4861-ad69-fe88564c916a.mp4
+![VSCode Customizer in action](./vscode-customizer.gif)
 
 This extension runs on the vscode custom-css extension.
 
 https://github.com/be5invis/vscode-custom-css
 
-### Release Notes v21.1
-
-Added more options to cover different areas of your background. 🎴
-
- - You can only cover your editor area now, for example
- - available modes: fullscreen, fullscreen_notitle, editor, editor_extended, panel, sidebar, sidebar_extended
-
-```javascript
-// available modes: fullscreen, fullscreen_notitle, editor, editor_extended, panel, sidebar, sidebar_extended
-FileBG.mode = "fullscreen_notitle";
-```
-You can choose one of the modes.
 
 ### Installation
 
