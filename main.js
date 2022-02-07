@@ -187,7 +187,7 @@ class Customizer {
   constructor(options) {
     const defaultOptions = {
       config: {
-        all: {
+        preload: {
           style: "",
           callback: (div) => {
             while (div.firstChild) {
@@ -196,33 +196,13 @@ class Customizer {
           }
         },
         default: {
-          style: getFullscreenBackgroundStyle("https://images.alphacoders.com/985/thumb-1920-985802.png"),
+          style: "",
           callback: () => {},
         },
-        plaintext: {
-          style: getFullscreenBackgroundStyle("https://img5.goodfon.com/wallpaper/nbig/2/28/tsvety-buket-bloknot-1.jpg"),
+        postload: {
+          style: "",
           callback: () => {},
-        },
-        javascript: {
-          style: getFullscreenBackgroundStyle("https://www.wallpapertip.com/wmimgs/83-838172_programming-javascript.jpg"),
-          callback: () => {},
-        },
-        json: {
-          style: getFullscreenBackgroundStyle("https://wallpaperaccess.com/full/1555147.png"),
-          callback: () => {},
-        },
-        jsonc: {
-          style: getFullscreenBackgroundStyle("https://wallpaperaccess.com/full/1555147.png"),
-          callback: () => {},
-        },
-        html: {
-          style: getFullscreenBackgroundStyle("https://wallpaperaccess.com/full/4868336.jpg"),
-          callback: () => {},
-        },
-        css: {
-          style: getFullscreenBackgroundStyle("https://p4.wallpaperbetter.com/wallpaper/285/806/562/css-css3-wallpaper-preview.jpg"),
-          callback: () => {},
-        },
+        }
       },
       observe: {
         interval: 100,
@@ -339,12 +319,18 @@ class Customizer {
     const editorMode = editorInstance.getAttribute("data-mode-id");
     this.log(`Switched to tab with mode: ${editorMode}`);
 
-    // get the right background image
-    const config = this.config[editorMode] !== undefined ? this.config[editorMode] : this.config.default;
+    const defaultConfig = this.config.default !== undefined ? this.config.default : {
+      style: "",
+      callback: () => {},
+    };
 
-    this.setBackgroundStyle(this.config.all.style + config.style, div);
-    this.config.all.callback(div);
+    // get the right background image
+    const config = this.config[editorMode] !== undefined ? this.config[editorMode] : defaultConfig;
+
+    this.setBackgroundStyle(this.config.preload.style + config.style + this.config.postload.style, div);
+    this.config.postload.callback(div);
     config.callback(div);
+    this.config.postload.callback(div);
   }
 
   observeChanges(div) {
